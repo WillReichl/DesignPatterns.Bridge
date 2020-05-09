@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace BridgeExercise
 {
@@ -21,32 +22,49 @@ namespace BridgeExercise
 
     public interface IRenderer
     {
-      string WhatToRenderAs { get; }
+        string WhatToRenderAs { get; }
     }
 
     public abstract class Shape
     {
-      public string Name { get; set; }
+        protected IRenderer renderer;
+
+        protected Shape(IRenderer renderer)
+        {
+            this.renderer = renderer;
+        }
+
+        public string Name { get; set; }
+        public override string ToString()
+        {
+            return $"Drawing {Name} as {renderer.WhatToRenderAs}";
+        }
     }
 
     public class Triangle : Shape
     {
-      public Triangle() => Name = "Triangle";
+        public Triangle(IRenderer renderer) : base(renderer)
+        {
+            Name = "Triangle";
+        }
     }
 
     public class Square : Shape
     {
-      public Square() => Name = "Square";
+        public Square(IRenderer renderer) : base(renderer)
+        {
+            Name = "Square";
+        }
     }
 
-    public class VectorSquare : Square
+    public class VectorRenderer : IRenderer
     {
-      public override string ToString() => $"Drawing {Name} as lines";
+        public string WhatToRenderAs => "lines";
     }
 
-    public class RasterSquare : Square
+    public class RasterRenderer : IRenderer
     {
-      public override string ToString() => $"Drawing {Name} as pixels";
+        public string WhatToRenderAs => "pixels";
     }
 
     // imagine VectorTriangle and RasterTriangle are here too
@@ -55,8 +73,21 @@ namespace BridgeExercise
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(new VectorSquare());
-            Console.WriteLine(new RasterSquare());
+        }
+    }
+
+    namespace Coding.Exercise.Tests
+    {
+        [TestFixture]
+        public class TestSuite
+        {
+            [Test]
+            public void Test()
+            {
+                Assert.That(
+                  new Square(new VectorRenderer()).ToString(),
+                  Is.EqualTo("Drawing Square as lines"));
+            }
         }
     }
 }

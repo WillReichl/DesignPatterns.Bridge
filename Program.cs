@@ -19,6 +19,11 @@ namespace BridgeExercise
      * new Triangle(new RasterRenderer()).ToString() // returns "Drawing Triangle as pixels"
      */
 
+    public interface IRenderer
+    {
+      string WhatToRenderAs { get; }
+    }
+
     public abstract class Shape
     {
       public string Name { get; set; }
@@ -36,12 +41,12 @@ namespace BridgeExercise
 
     public class VectorSquare : Square
     {
-      public override string ToString() => "Drawing {Name} as lines";
+      public override string ToString() => $"Drawing {Name} as lines";
     }
 
     public class RasterSquare : Square
     {
-      public override string ToString() => "Drawing {Name} as pixels";
+      public override string ToString() => $"Drawing {Name} as pixels";
     }
 
     // imagine VectorTriangle and RasterTriangle are here too
@@ -50,7 +55,8 @@ namespace BridgeExercise
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine(new VectorSquare());
+            Console.WriteLine(new RasterSquare());
         }
     }
 }
